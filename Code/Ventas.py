@@ -38,10 +38,7 @@ x = (screenwidth/2) - (1000/2)
 y = (screenheight/2) - (900/2)
 
 ventas.geometry("%dx%d+%d+%d" % (1000, 900, x, y))
-
-
-
-
-
-
 ventas.mainloop()
+
+
+

@@ -63,13 +63,13 @@ def registrar_usuario():
     except FileNotFoundError:
         pass
 
-    # verifica si el usuario ya existe
-    if any(f'{nombre_entry.get()},{fechaNacimiento_entry.get()},{documento_entry.get()}' in usuario for usuario in usuarios_registrados):
-        messagebox.showerror("Tenemos un errorsillo muchachon", "El usuario ya existe")
+    # verifica si el documento ya existe
+    if any(documento_entry.get() in usuario.split(',')[3] for usuario in usuarios_registrados):
+        messagebox.showerror("Tenemos un errorsillo muchachon", "El documento ya está registrado")
         documento_entry.delete(0, END)
         return
 
-    #abre el archivo para añadir el nuevo usuario
+    # abre el archivo para añadir el nuevo usuario
     with open('./Database/Usuarios.txt','a') as f:
         f.write(f'{primary_key},{nombre_entry.get()},{fechaNacimiento_entry.get()},{documento_entry.get()}\n')
         messagebox.showinfo("Exito muchachon", "Usuario registrado con exito")

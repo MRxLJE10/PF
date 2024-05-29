@@ -4,6 +4,7 @@ import subprocess
 import pandas as pd
 from tkinter import messagebox
 import datetime
+import numpy as np
 
 Ingresar_p = Tk()
 
@@ -58,7 +59,7 @@ nombre_producto = Entry(
     Ingresar_p
 )
 
-nombre_producto.place(x = 50, y = 90)
+nombre_producto.place(x = 65, y = 90)
 
 
 #------------------------------------
@@ -72,34 +73,34 @@ cantidad = Label(
     bg = "#1E4024"
 )
 
-cantidad.place(x = 50,y = 130)
+cantidad.place(x = 230,y = 50)
 
 
 cantidad_producto = Entry(
     Ingresar_p
 )
 
-cantidad_producto.place(x = 50, y = 170)
+cantidad_producto.place(x = 250, y = 90)
 
 #-------------------------------------
 
 #Recuadro para ingresar el costo de producto
-costo = Label(
+costoCompra = Label(
     Ingresar_p,
-    text = "Costo del producto",
+    text = "Costo de compra",
     font = ("Bahnschrift", 12),
     fg = "#FFFFFF",
     bg = "#1E4024"
 )
 
-costo.place(x = 50,y = 210)
+costoCompra.place(x = 430,y = 50)
 
 
-costo_producto = Entry(
+costo_compra = Entry(
     Ingresar_p
 )
 
-costo_producto.place(x = 50, y = 250)
+costo_compra.place(x = 430, y = 90)
 
 #-------------------------------------
 
@@ -112,14 +113,14 @@ precio_venta = Label(
     bg = "#1E4024"
 )
 
-precio_venta.place(x = 50,y = 290)
+precio_venta.place(x = 50,y = 130)
 
 
 precio_v = Entry(
     Ingresar_p
 )
 
-precio_v.place(x = 50, y = 330)
+precio_v.place(x = 50, y = 170)
 
 #-------------------------------------
 
@@ -132,14 +133,14 @@ fecha_vence = Label(
     bg = "#1E4024"
 )
 
-fecha_vence.place(x = 50,y = 370)
+fecha_vence.place(x = 245,y = 130)
 
 
 fecha_v = Entry(
     Ingresar_p
 )
 
-fecha_v.place(x = 50, y = 410)
+fecha_v.place(x = 250, y = 170)
 
 #-------------------------------------
 tabla = ttk.Treeview(
@@ -170,12 +171,57 @@ tabla.heading("Fecha de vencimiento", text = "Fecha de vencimiento", anchor = CE
 tabla.place(x=100, y=600)
 
 #-------------------------------------
+
+#Carga los datos de la tabla
+def actualizar_tabla():
+    # Borra todos los elementos de la tabla
+    for i in tabla.get_children():
+        tabla.delete(i)
+
+    # Vuelve a llenar la tabla con los datos actualizados
+    try:
+        df = pd.read_csv('./Database/productos.csv', encoding='utf-8')
+    except pd.errors.EmptyDataError:
+        return
+
+    for index, row in df.iterrows():
+        tabla.insert("", "end", values=list(row))
+
+
 def añadir_producto():
-    df = pd.read_csv("./Database/productos.csv")
+    # Toma lo que hay en los entrys y los almacena en variables
     nombre = nombre_producto.get()
     cantidad = cantidad_producto.get()
-    messagebox.showinfo("Éxito","Producto guardado con éxito")
+    costoCompra = costo_compra.get()
+    precio = precio_v.get()
+    fecha = fecha_v.get()
 
+    # Valida que los campos no esten vacios
+    try:
+        df = pd.read_csv("./Database/productos.csv")
+    except pd.errors.EmptyDataError:
+        df = pd.DataFrame(columns=['ID', 'nombre', 'cantidad', 'costoCompra', 'precio', 'fecha'])
+
+    while True:
+        id = np.random.randint(100, 999)
+        if id not in df['ID'].values:
+            break
+
+    producto = pd.DataFrame([[id, nombre, cantidad, costoCompra, precio, fecha]],
+                            columns=df.columns)
+
+    df = pd.concat([df, producto], ignore_index=True)
+    df.to_csv("./Database/productos.csv", index=False, na_rep='')
+
+    # Llama a actualizar_tabla después de añadir el producto
+    actualizar_tabla()
+
+def on_focus(event):
+    actualizar_tabla()
+
+# Asume que 'ventana' es el objeto de la ventana de Tkinter
+Ingresar_p.bind('<FocusIn>', on_focus)
+#-------------------------------------
 
 añadir_b = Button(
     Ingresar_p,
@@ -192,7 +238,7 @@ añadir_b.configure(
     bg = "#1E4024"
 )
 
-añadir_b.place(x=50, y=350)
+añadir_b.place(x=300, y=450)
 
 
 
