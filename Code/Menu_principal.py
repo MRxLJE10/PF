@@ -42,6 +42,9 @@ def volver():
     Menu_principal.destroy()
     subprocess.call(["python", "Code/PF.py"])
 
+def registrar_cliente():
+    Menu_principal.destroy()
+    subprocess.call(["python", "Code/Registrar_cliente.py"])
 
 #Boton volver
 volver_b = Button(
@@ -112,6 +115,22 @@ informe.configure(
 )
 informe.place(x=365, y=425)
 
+reg_cliente = Button(
+    Menu_principal,
+    borderwidth=0,
+    text="Registar Usuario",
+    command=registrar_cliente,
+    activebackground="#1E4024",
+    activeforeground="#FFFFFF"
+)
+
+reg_cliente.configure(
+    font=("Bahnschrift", 14),
+    bg="#1E4024",
+    fg="#FFFFFF",
+)
+
+reg_cliente.place(x=10, y=10)
 
 
 

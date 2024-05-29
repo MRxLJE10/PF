@@ -1,6 +1,5 @@
 #Proyecto final
 #Integrantes:
-
 #Librerias
 from tkinter import *
 from tkinter import ttk
@@ -50,7 +49,7 @@ ingresar_u.configure(
 ingresar_u.place(x=10, y=10)
 
 #----------------------------------------------------------
-def registrar_u():
+def registrar_U():
     inventario.destroy()
     subprocess.call(["python", "Code/registrar.py"])
 
@@ -58,7 +57,7 @@ registrar_u = Button(
     inventario,
     borderwidth=0,
     text="Registrar Usuario",
-    command=registrar_u,
+    command=registrar_U,
     activebackground="#1E4024",
     activeforeground="#FFFFFF"
 )

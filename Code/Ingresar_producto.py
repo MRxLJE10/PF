@@ -196,6 +196,11 @@ def añadir_producto():
     precio = precio_v.get()
     fecha = fecha_v.get()
 
+    if int(cantidad) < 0:
+        # Muestra un mensaje de error si la cantidad es negativa
+        messagebox.showerror("Error muchachon", "La cantidad no puede ser negativa no leiste el proyecto o que?")
+        return
+
     # Valida que los campos no esten vacios
     try:
         df = pd.read_csv("./Database/productos.csv")
