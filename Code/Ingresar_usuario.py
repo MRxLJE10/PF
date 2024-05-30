@@ -3,19 +3,20 @@ from tkinter import ttk
 import subprocess
 from tkinter import messagebox
 from PIL import Image, ImageTk
+import json
 
 Ingresar_usuario = Tk()
 
 Ingresar_usuario.title("Ingresar Usuario")
-Ingresar_usuario.geometry("800x600")
+Ingresar_usuario.geometry("500x500")
 Ingresar_usuario.resizable(False,False)
 Ingresar_usuario.configure(bg="#1E4024")
 
 screenwidth = Ingresar_usuario.winfo_screenwidth()
 screenheight = Ingresar_usuario.winfo_screenheight()
 
-x = (screenwidth/2) - (800/2)
-y = (screenheight/2) - (600/2)
+x = (screenwidth/2) - (500/2)
+y = (screenheight/2) - (500/2)
 
 Ingresar_usuario.geometry("%dx%d+%d+%d" % (500, 500, x, y))
 
@@ -47,9 +48,12 @@ def verificar_iniciar():
         for linea in lineas:
             datos_usuario = linea.split(",")
             documento = datos_usuario[3].strip() 
+            nombre_usuario = datos_usuario[1].strip()
             
             if documento == documento_entry.get():
                 messagebox.showinfo("Bienvenido","Bienvenido muchachon")
+                with open('./Database/Usuario_actual.json', 'w') as file:
+                    json.dump({'usuario_actual': nombre_usuario}, file)
                 documento_entry.delete(0, END)
                 i_menu()
                 return  #sale de la funcion al ingresar correctamente

@@ -78,7 +78,7 @@ producto.configure(
     fg = "#FFFFFF",
     bg = "#1E4024"
 )
-producto.place(x=325, y=150)
+producto.place(x=325, y=140)
 
 
 ventas = Button(
@@ -95,7 +95,7 @@ ventas.configure(
     fg = "#FFFFFF",
     bg = "#1E4024"
 )
-ventas.place(x=365, y=285)
+ventas.place(x=365, y=255)
 
 
 
@@ -113,24 +113,24 @@ informe.configure(
     fg = "#FFFFFF",
     bg = "#1E4024"
 )
-informe.place(x=365, y=425)
+informe.place(x=365, y=367)
 
 reg_cliente = Button(
     Menu_principal,
     borderwidth=0,
-    text="Registar Usuario",
+    text="Registrar Cliente",
     command=registrar_cliente,
     activebackground="#1E4024",
     activeforeground="#FFFFFF"
 )
 
 reg_cliente.configure(
-    font=("Bahnschrift", 14),
+    font=("Bahnschrift", 12),
     bg="#1E4024",
     fg="#FFFFFF",
 )
 
-reg_cliente.place(x=10, y=10)
+reg_cliente.place(x=334, y=480)
 
 
 

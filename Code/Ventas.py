@@ -3,7 +3,7 @@ from tkinter import messagebox
 from tkinter import ttk
 import subprocess
 import pandas as pd 
-
+import json
 
 ventas = Tk()
 
@@ -74,8 +74,11 @@ tabla.place(x=100, y=600)
 
 
 def actualizar_tabla():
+    # Borra todos los elementos de la tabla
+    for i in tabla.get_children():
+        tabla.delete(i)
 
-# Vuelve a llenar la tabla con los datos actualizados
+    # Vuelve a llenar la tabla con los datos actualizados
     try:
         df = pd.read_csv('./Database/productos.csv', encoding='utf-8')
     except pd.errors.EmptyDataError:
@@ -83,7 +86,7 @@ def actualizar_tabla():
 
     for index, row in df.iterrows():
         tabla.insert("", "end", values=list(row))
-
+        
 def on_focus(event):
     actualizar_tabla()
 
@@ -131,22 +134,30 @@ cantidad_entry = Entry(
 
 cantidad_entry.place(x = 300, y = 130)
 
-carrito_button = Button(
-    ventas,
-    text = "Agregar al carrito",
-    borderwidth=0,
-    activebackground="#1E4024",
-    activeforeground="#FFFFFF"
-)
+#----------------------Función que hace la venta----------------------
+contador_facturas = 1
 
-carrito_button.configure(
-    font = ("Bahnschrift", 12),
-    fg = "#FFFFFF",
-    bg = "#1E4024"
-)
+def realizar_venta():
+    global contador_facturas  # Declarar contador_facturas como global
 
-carrito_button.place(x = 90, y = 200)
+    with open('./Database/Usuario_actual.json','r') as archivo:
+        datos_cargados = json.load(archivo)
+        usuario_actual = datos_cargados['usuario_actual']
 
+    contenido_carrito = visualizador.get('1.0','end-1c')
+    lineas = contenido_carrito.split('\n')
+    
+    factura = '\n'.join(lineas)
+
+    # Generar un nombre de archivo único para la factura
+    nombre_archivo_factura = f'./Database/Factura_{contador_facturas}.txt'
+    contador_facturas += 1  # Incrementar el contador para la próxima factura
+
+    # Guardar la factura en un archivo de texto
+    with open(nombre_archivo_factura, 'w') as archivo:
+        archivo.write(factura)
+
+    print("La venta ha sido realizada por el usuario: " + usuario_actual)
 
 
 venta_button = Button(
@@ -154,7 +165,8 @@ venta_button = Button(
     text = "Realizar venta",
     borderwidth=0,
     activebackground="#1E4024",
-    activeforeground="#FFFFFF"
+    activeforeground="#FFFFFF",
+    command=realizar_venta
 )
 
 venta_button.configure(
@@ -165,7 +177,60 @@ venta_button.configure(
 
 venta_button.place(x = 300, y = 200)
 
+#----------------------Función que agrega productos al carrito----------------------
 
+def buscar_producto(id_producto):
+    try:
+        df = pd.read_csv('./Database/productos.csv', encoding='utf-8')
+    except pd.errors.EmptyDataError:
+        return
 
+    for index, row in df.iterrows():
+        if str(row['ID']) == id_producto:
+            return row
+
+    return None
+
+def agregar_texto():
+    id_producto = id_entry.get()
+    producto = buscar_producto(id_producto)
+    cantidad = cantidad_entry.get()
+    if producto is None:
+        messagebox.showerror("Error", "Producto no encontrado")
+        return
+    nombre_producto = producto['Nombre']
+    producto = "Producto: " + id_producto
+    visualizador.configure(state='normal')
+    visualizador.insert('end',cantidad + " " + nombre_producto + "\n")
+    visualizador.configure(state='disabled')
+
+visualizador = Text(
+    ventas,
+    width=50,
+    height=20,
+    state=NORMAL
+)
+visualizador.insert('end', "Carrito de compras:\n")
+
+visualizador.configure(state=DISABLED)
+
+visualizador.place(x=500, y=100)
+
+carrito_button = Button(
+    ventas,
+    text = "Agregar al carrito",
+    borderwidth=0,
+    activebackground="#1E4024",
+    activeforeground="#FFFFFF",
+    command=agregar_texto
+)
+
+carrito_button.configure(
+    font = ("Bahnschrift", 12),
+    fg = "#FFFFFF",
+    bg = "#1E4024"
+)
+
+carrito_button.place(x = 90, y = 200)
 
 ventas.mainloop()

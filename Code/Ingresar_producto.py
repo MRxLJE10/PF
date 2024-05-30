@@ -16,10 +16,10 @@ Ingresar_p.configure(bg="#1E4024")
 screenwidth = Ingresar_p.winfo_screenwidth()
 screenheight = Ingresar_p.winfo_screenheight()
 
-x = (screenwidth/2) - (1000/2)
-y = (screenheight/2) - (900/2)
+x = (screenwidth/2) - (900/2)
+y = (screenheight/2) - (730/2)
 
-Ingresar_p.geometry("%dx%d+%d+%d" % (1000, 900, x, y))
+Ingresar_p.geometry("%dx%d+%d+%d" % (900, 730, x, y))
 
 def volver():
     Ingresar_p.destroy()
@@ -52,14 +52,14 @@ nombre = Label(
     bg = "#1E4024"
 )
 
-nombre.place(x = 50,y = 50)
+nombre.place(x = 50,y = 70)
 
 
 nombre_producto = Entry(
     Ingresar_p
 )
 
-nombre_producto.place(x = 65, y = 90)
+nombre_producto.place(x = 65, y = 110)
 
 
 #------------------------------------
@@ -73,14 +73,14 @@ cantidad = Label(
     bg = "#1E4024"
 )
 
-cantidad.place(x = 230,y = 50)
+cantidad.place(x = 230,y = 70)
 
 
 cantidad_producto = Entry(
     Ingresar_p
 )
 
-cantidad_producto.place(x = 250, y = 90)
+cantidad_producto.place(x = 250, y = 110)
 
 #-------------------------------------
 
@@ -93,14 +93,14 @@ costoCompra = Label(
     bg = "#1E4024"
 )
 
-costoCompra.place(x = 430,y = 50)
+costoCompra.place(x = 430,y = 70)
 
 
 costo_compra = Entry(
     Ingresar_p
 )
 
-costo_compra.place(x = 430, y = 90)
+costo_compra.place(x = 430, y = 110)
 
 #-------------------------------------
 
@@ -113,14 +113,14 @@ precio_venta = Label(
     bg = "#1E4024"
 )
 
-precio_venta.place(x = 50,y = 130)
+precio_venta.place(x = 65,y = 150)
 
 
 precio_v = Entry(
     Ingresar_p
 )
 
-precio_v.place(x = 50, y = 170)
+precio_v.place(x = 65, y = 190)
 
 #-------------------------------------
 
@@ -133,14 +133,14 @@ fecha_vence = Label(
     bg = "#1E4024"
 )
 
-fecha_vence.place(x = 245,y = 130)
+fecha_vence.place(x = 245,y = 150)
 
 
 fecha_v = Entry(
     Ingresar_p
 )
 
-fecha_v.place(x = 250, y = 170)
+fecha_v.place(x = 250, y = 190)
 
 #-------------------------------------
 tabla = ttk.Treeview(
@@ -168,7 +168,7 @@ tabla.heading("Costo Compra", text = "Costo Compra", anchor = CENTER)
 tabla.heading("Precio Venta", text = "Precio Venta", anchor = CENTER)
 tabla.heading("Fecha de vencimiento", text = "Fecha de vencimiento", anchor = CENTER)
 
-tabla.place(x=100, y=600)
+tabla.place(x=65, y=400)
 
 #-------------------------------------
 
@@ -243,7 +243,7 @@ añadir_b.configure(
     bg = "#1E4024"
 )
 
-añadir_b.place(x=300, y=450)
+añadir_b.place(x=250, y=290)
 
 
 
