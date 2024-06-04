@@ -156,10 +156,16 @@ cantidad_entry.place(x = 300, y = 130)
 
 
 #----------------------Función que hace la venta----------------------
-contador_facturas = 0 
+
+try:
+    with open('./Database/contador_facturas.json', 'r') as f:
+        contador_facturas = json.load(f)
+except FileNotFoundError:
+    # Si el archivo no existe, inicializa contador_facturas a 0
+    contador_facturas = 0
+
 def realizar_venta():
     global contador_facturas
-      # Declarar contador_facturas como global
 
     id_producto = id_entry.get()
     try:
@@ -172,24 +178,11 @@ def realizar_venta():
         datos_cargados = json.load(archivo)
         usuario_actual = datos_cargados['usuario_actual']
 
-    contenido_carrito = visualizador.get('1.0', 'end-1c')
-    lineas = contenido_carrito.split('\n')
-    factura = '\n'.join(lineas)
-
-
-    contador_facturas += 1
-
-    # Definir la ruta de la carpeta donde se guardarán las facturas
-    ruta_carpeta_facturas = './Database/'
-
-    # Verificar si la carpeta de facturas existe, si no, crearla
-    if not os.path.exists(ruta_carpeta_facturas):
-        os.makedirs(ruta_carpeta_facturas)
-
-    # Guardar la factura en un archivo de texto con el número de factura actual
-    nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
-    with open(nombre_archivo_factura, 'w') as f:
-        f.write(factura)
+    # Verifica si hay productos en el carrito
+    contenido_carrito = visualizador.get('1.0', 'end-1c').strip()
+    if contenido_carrito == "Carrito de compras:" or contenido_carrito == "":
+        messagebox.showerror("Error", "El carrito está vacío")
+        return
 
     # Lee los datos de los productos desde el archivo CSV
     df = pd.read_csv("./Database/productos.csv")
@@ -220,6 +213,25 @@ def realizar_venta():
     # Escribe los datos de los productos actualizados de nuevo en el archivo CSV
     df.to_csv("./Database/productos.csv", index=False)
 
+    # Incrementa el contador de facturas después de realizar todas las verificaciones
+    contador_facturas += 1
+
+    # Guarda el contador de facturas en un archivo
+    with open('./Database/contador_facturas.json', 'w') as f:
+        json.dump(contador_facturas, f)
+
+    # Definir la ruta de la carpeta donde se guardarán las facturas
+    ruta_carpeta_facturas = './Database/'
+
+    # Verificar si la carpeta de facturas existe, si no, crearla
+    if not os.path.exists(ruta_carpeta_facturas):
+        os.makedirs(ruta_carpeta_facturas)
+
+    # Guardar la factura en un archivo de texto con el número de factura actual
+    nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
+    with open(nombre_archivo_factura, 'w') as f:
+        f.write(contenido_carrito)
+
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 
     actualizar_tabla()
@@ -231,7 +243,6 @@ def realizar_venta():
     visualizador.delete('1.0', END)
     visualizador.insert('end', "Carrito de compras:\n")
     visualizador.configure(state='disabled')
-
 
 venta_button = Button(
     ventas,
@@ -252,29 +263,42 @@ venta_button.place(x = 300, y = 200)
 
 #----------------------Función que agrega productos al carrito----------------------
 
+# Función para buscar un producto por su ID
 def buscar_producto(id_producto):
     try:
         df = pd.read_csv('./Database/productos.csv', encoding='utf-8')
     except pd.errors.EmptyDataError:
         return
-
+# Busca el producto con el ID dado
     for index, row in df.iterrows():
         if str(row['ID']) == id_producto:
             return row
 
     return None
 
+# Función para agregar productos al carrito
 def agregar_texto():
     id_producto = id_entry.get()
     producto = buscar_producto(id_producto)
-    cantidad = cantidad_entry.get()
+    try:
+        cantidad = int(cantidad_entry.get())
+    except ValueError:
+        messagebox.showerror("Error", "Cantidad debe ser un número")
+        return
+
     if producto is None:
         messagebox.showerror("Error", "Producto no encontrado")
         return
+
     nombre_producto = producto['Nombre']
-    producto = "Producto: " + id_producto
+    cantidad_disponible = producto['Cantidad']
+
+    if cantidad > cantidad_disponible:
+        messagebox.showerror("Error", "Cantidad insuficiente en inventario")
+        return
+
     visualizador.configure(state='normal')
-    visualizador.insert('end',cantidad + " " + nombre_producto + "\n")
+    visualizador.insert('end', f"{cantidad} {nombre_producto}\n")
     visualizador.configure(state='disabled')
 
 visualizador = Text(
@@ -305,8 +329,5 @@ carrito_button.configure(
 )
 
 carrito_button.place(x = 90, y = 200)
-
-
-
 
 ventas.mainloop()
