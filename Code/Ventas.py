@@ -10,7 +10,7 @@ from datetime import datetime
 ventas = Tk()
 
 ventas.title("Ventas")
-ventas.resizable(False,False)
+ventas.resizable(False, False)
 ventas.configure(bg="#1E4024")
 
 # Variable global para el contador de facturas
@@ -28,36 +28,34 @@ else:
     # Si no existe, establecer el contador en 1
     contador_facturas = 1
 
-
 def volver():
     ventas.destroy()
-    subprocess.call(["python","Code/Menu_principal.py"])
+    subprocess.call(["python", "Code/Menu_principal.py"])
     # Reiniciar el contador de facturas
     contador_facturas = 1
 
-
 volver_b = Button(
     ventas,
-    text = "Volver",
-    command = volver,
+    text="Volver",
+    command=volver,
     borderwidth=0,
     activebackground="#1E4024",
     activeforeground="#FFFFFF"
 )
 volver_b.configure(
-    font = ("Bahnschrift", 12),
-    fg = "#FFFFFF",
-    bg = "#1E4024"
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
 )
 
 volver_b.place(x=10, y=10)
 
-#Mide las dimensiones de la pantalla y posiciona la pantalla en el centro
+# Mide las dimensiones de la pantalla y posiciona la pantalla en el centro
 screenwidth = ventas.winfo_screenwidth()
 screenheight = ventas.winfo_screenheight()
 
-x = (screenwidth/2) - (1000/2)
-y = (screenheight/2) - (900/2)
+x = (screenwidth / 2) - (1000 / 2)
+y = (screenheight / 2) - (900 / 2)
 
 ventas.geometry("%dx%d+%d+%d" % (1000, 900, x, y))
 
@@ -67,31 +65,28 @@ tabla = ttk.Treeview(
     ventas
 )
 
-#Carga el archivo csv con la libreria pandas(nombrada como pd)
+# Carga el archivo csv con la libreria pandas(nombrada como pd)
 df = pd.read_csv("./Database/productos.csv")
 
-tabla['columns'] = ("ID","Nombre", "Cantidad", "Costo Compra", "Precio Venta","Fecha de vencimiento")
+tabla['columns'] = ("ID", "Nombre", "Cantidad", "Costo Compra", "Precio Venta", "Fecha de vencimiento")
 
-tabla.column("#0",width=0, stretch=NO)
-tabla.column("ID", width = 70)
-tabla.column("Nombre", width = 200)
-tabla.column("Cantidad", width = 80)
-tabla.column("Costo Compra", width = 100)
-tabla.column("Precio Venta", width = 100)
-tabla.column("Fecha de vencimiento", width = 200)
+tabla.column("#0", width=0, stretch=NO)
+tabla.column("ID", width=70)
+tabla.column("Nombre", width=200)
+tabla.column("Cantidad", width=80)
+tabla.column("Costo Compra", width=100)
+tabla.column("Precio Venta", width=100)
+tabla.column("Fecha de vencimiento", width=200)
 
-tabla.heading("#0", text = "", anchor = CENTER)
-tabla.heading("ID", text = "ID", anchor = CENTER)
-tabla.heading("Nombre", text = "Nombre", anchor = CENTER)
-tabla.heading("Cantidad", text = "Cantidad", anchor = CENTER)
-tabla.heading("Costo Compra", text = "Costo Compra", anchor = CENTER)
-tabla.heading("Precio Venta", text = "Precio Venta", anchor = CENTER)
-tabla.heading("Fecha de vencimiento", text = "Fecha de vencimiento", anchor = CENTER)
+tabla.heading("#0", text="", anchor=CENTER)
+tabla.heading("ID", text="ID", anchor=CENTER)
+tabla.heading("Nombre", text="Nombre", anchor=CENTER)
+tabla.heading("Cantidad", text="Cantidad", anchor=CENTER)
+tabla.heading("Costo Compra", text="Costo Compra", anchor=CENTER)
+tabla.heading("Precio Venta", text="Precio Venta", anchor=CENTER)
+tabla.heading("Fecha de vencimiento", text="Fecha de vencimiento", anchor=CENTER)
 
 tabla.place(x=100, y=600)
-
-
-
 
 def actualizar_tabla():
     # Borra todos los elementos de la tabla
@@ -106,54 +101,52 @@ def actualizar_tabla():
 
     for index, row in df.iterrows():
         tabla.insert("", "end", values=list(row))
-        
+
 def on_focus(event):
     actualizar_tabla()
 
 # Asume que 'ventana' es el objeto de la ventana de Tkinter
 ventas.bind('<FocusIn>', on_focus)
 
-
 id_label = Label(
     ventas,
-    text = "ID Producto",
+    text="ID Producto",
     borderwidth=0
 )
 
 id_label.configure(
-    font = ("Bahnschrift", 12),
+    font=("Bahnschrift", 12),
     fg="#FFFFFF",
     bg="#1E4024"
 )
 
-id_label.place(x = 100, y = 100)
+id_label.place(x=100, y=100)
 
 id_entry = Entry(
     ventas
 )
 
-id_entry.place(x = 100, y = 130)
+id_entry.place(x=100, y=130)
 
 cantidad_label = Label(
     ventas,
-    text = "Cantidad",
+    text="Cantidad",
     borderwidth=0
 )
 
 cantidad_label.configure(
-    font = ("Bahnschrift", 12),
+    font=("Bahnschrift", 12),
     fg="#FFFFFF",
     bg="#1E4024"
 )
 
-cantidad_label.place(x = 300, y = 100)
+cantidad_label.place(x=300, y=100)
 
 cantidad_entry = Entry(
     ventas
 )
 
-cantidad_entry.place(x = 300, y = 130)
-
+cantidad_entry.place(x=300, y=130)
 
 #----------------------Función que hace la venta----------------------
 
@@ -164,51 +157,39 @@ except FileNotFoundError:
     # Si el archivo no existe, inicializa contador_facturas a 0
     contador_facturas = 0
 
+carrito = []
+
 def realizar_venta():
     global contador_facturas
 
-    id_producto = id_entry.get()
-    try:
-        cantidad_vendida = int(cantidad_entry.get())
-    except ValueError:
-        messagebox.showerror("Error", "Cantidad debe ser un número")
-        return
-
-    with open('./Database/Usuario_actual.json', 'r') as archivo:
-        datos_cargados = json.load(archivo)
-        usuario_actual = datos_cargados['usuario_actual']
-
     # Verifica si hay productos en el carrito
-    contenido_carrito = visualizador.get('1.0', 'end-1c').strip()
-    if contenido_carrito == "Carrito de compras:" or contenido_carrito == "":
+    if not carrito:
         messagebox.showerror("Error", "El carrito está vacío")
         return
 
     # Lee los datos de los productos desde el archivo CSV
     df = pd.read_csv("./Database/productos.csv")
 
-    # Verifica si el producto existe en la base de datos
-    try:
-        id_producto = int(id_producto)
-    except ValueError:
-        messagebox.showerror("Error", "ID de producto debe ser un número")
-        return
+    for item in carrito:
+        id_producto = item['ID']
+        cantidad_vendida = item['Cantidad']
 
-    if id_producto not in df['ID'].values:
-        messagebox.showerror("Error", "ID de producto no encontrado")
-        return
+        # Verifica si el producto existe en la base de datos
+        if int(id_producto) not in df['ID'].values:
+            messagebox.showerror("Error", f"ID de producto {id_producto} no encontrado")
+            return
 
-    # Encuentra el índice del producto que se está vendiendo
-    indice_producto = df.loc[df['ID'] == id_producto].index[0]
+        # Encuentra el índice del producto que se está vendiendo
+        indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
 
-    # Verifica si hay suficiente cantidad del producto
-    cantidad_actual = df.at[indice_producto, 'Cantidad']
-    if cantidad_vendida > cantidad_actual:
-        messagebox.showerror("Error", "Cantidad insuficiente en inventario")
-        return
+        # Verifica si hay suficiente cantidad del producto
+        cantidad_actual = df.at[indice_producto, 'Cantidad']
+        if cantidad_vendida > cantidad_actual:
+            messagebox.showerror("Error", f"Cantidad insuficiente en inventario para el producto {id_producto}")
+            return
 
-    # Actualiza la cantidad del producto
-    df.at[indice_producto, 'Cantidad'] = cantidad_actual - cantidad_vendida
+        # Actualiza la cantidad del producto
+        df.at[indice_producto, 'Cantidad'] = cantidad_actual - cantidad_vendida
 
     # Escribe los datos de los productos actualizados de nuevo en el archivo CSV
     df.to_csv("./Database/productos.csv", index=False)
@@ -230,7 +211,8 @@ def realizar_venta():
     # Guardar la factura en un archivo de texto con el número de factura actual
     nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
     with open(nombre_archivo_factura, 'w') as f:
-        f.write(contenido_carrito)
+        for item in carrito:
+            f.write(f"{item['Cantidad']} {item['Nombre']}\n")
 
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 
@@ -243,10 +225,11 @@ def realizar_venta():
     visualizador.delete('1.0', END)
     visualizador.insert('end', "Carrito de compras:\n")
     visualizador.configure(state='disabled')
+    carrito.clear()
 
 venta_button = Button(
     ventas,
-    text = "Realizar venta",
+    text="Realizar venta",
     borderwidth=0,
     activebackground="#1E4024",
     activeforeground="#FFFFFF",
@@ -254,29 +237,27 @@ venta_button = Button(
 )
 
 venta_button.configure(
-    font = ("Bahnschrift", 12),
-    fg = "#FFFFFF",
-    bg = "#1E4024"
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
 )
 
-venta_button.place(x = 300, y = 200)
+venta_button.place(x=300, y=200)
 
 #----------------------Función que agrega productos al carrito----------------------
 
-# Función para buscar un producto por su ID
 def buscar_producto(id_producto):
     try:
         df = pd.read_csv('./Database/productos.csv', encoding='utf-8')
     except pd.errors.EmptyDataError:
-        return
-# Busca el producto con el ID dado
+        return None
+
     for index, row in df.iterrows():
         if str(row['ID']) == id_producto:
             return row
 
     return None
 
-# Función para agregar productos al carrito
 def agregar_texto():
     id_producto = id_entry.get()
     producto = buscar_producto(id_producto)
@@ -291,14 +272,30 @@ def agregar_texto():
         return
 
     nombre_producto = producto['Nombre']
-    cantidad_disponible = producto['Cantidad']
+    cantidad_disponible = int(producto['Cantidad'])
 
     if cantidad > cantidad_disponible:
         messagebox.showerror("Error", "Cantidad insuficiente en inventario")
         return
 
+    carrito.append({'ID': id_producto, 'Nombre': nombre_producto, 'Cantidad': cantidad})
     visualizador.configure(state='normal')
     visualizador.insert('end', f"{cantidad} {nombre_producto}\n")
+    visualizador.configure(state='disabled')
+
+def eliminar_ultimo_producto():
+    if not carrito:
+        messagebox.showerror("Error", "No hay productos en el carrito para eliminar")
+        return
+
+    carrito.pop()
+    
+    # Actualiza el visualizador del carrito
+    contenido_carrito = "Carrito de compras:\n" + "\n".join([f"{item['Cantidad']} {item['Nombre']}" for item in carrito])
+    
+    visualizador.configure(state='normal')
+    visualizador.delete('1.0', END)
+    visualizador.insert('end', contenido_carrito)
     visualizador.configure(state='disabled')
 
 visualizador = Text(
@@ -315,7 +312,7 @@ visualizador.place(x=500, y=100)
 
 carrito_button = Button(
     ventas,
-    text = "Agregar al carrito",
+    text="Agregar al carrito",
     borderwidth=0,
     activebackground="#1E4024",
     activeforeground="#FFFFFF",
@@ -323,11 +320,28 @@ carrito_button = Button(
 )
 
 carrito_button.configure(
-    font = ("Bahnschrift", 12),
-    fg = "#FFFFFF",
-    bg = "#1E4024"
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
 )
 
-carrito_button.place(x = 90, y = 200)
+carrito_button.place(x=90, y=200)
+
+eliminar_button = Button(
+    ventas,
+    text="Eliminar último producto",
+    borderwidth=0,
+    activebackground="#1E4024",
+    activeforeground="#FFFFFF",
+    command=eliminar_ultimo_producto
+)
+
+eliminar_button.configure(
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
+)
+
+eliminar_button.place(x=90, y=250)
 
 ventas.mainloop()
