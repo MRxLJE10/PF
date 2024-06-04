@@ -170,7 +170,6 @@ tabla.heading("Fecha de vencimiento", text = "Fecha de vencimiento", anchor = CE
 
 tabla.place(x=65, y=400)
 
-#-------------------------------------
 
 #Carga los datos de la tabla
 def actualizar_tabla():

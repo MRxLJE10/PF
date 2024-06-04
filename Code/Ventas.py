@@ -4,6 +4,8 @@ from tkinter import ttk
 import subprocess
 import pandas as pd 
 import json
+import os
+from datetime import datetime
 
 ventas = Tk()
 
@@ -11,10 +13,28 @@ ventas.title("Ventas")
 ventas.resizable(False,False)
 ventas.configure(bg="#1E4024")
 
+# Variable global para el contador de facturas
+contador_facturas = 0
+
+# Ruta del archivo para guardar el número de la última factura
+archivo_contador_facturas = './Database/contador_facturas.txt'
+
+# Verificar si el archivo existe
+if os.path.exists(archivo_contador_facturas):
+    # Si existe, cargar el número de la última factura
+    with open(archivo_contador_facturas, 'r') as archivo:
+        contador_facturas = int(archivo.read())
+else:
+    # Si no existe, establecer el contador en 1
+    contador_facturas = 1
+
 
 def volver():
     ventas.destroy()
     subprocess.call(["python","Code/Menu_principal.py"])
+    # Reiniciar el contador de facturas
+    contador_facturas = 1
+
 
 volver_b = Button(
     ventas,
@@ -134,30 +154,83 @@ cantidad_entry = Entry(
 
 cantidad_entry.place(x = 300, y = 130)
 
+
 #----------------------Función que hace la venta----------------------
-contador_facturas = 1
-
+contador_facturas = 0 
 def realizar_venta():
-    global contador_facturas  # Declarar contador_facturas como global
+    global contador_facturas
+      # Declarar contador_facturas como global
 
-    with open('./Database/Usuario_actual.json','r') as archivo:
+    id_producto = id_entry.get()
+    try:
+        cantidad_vendida = int(cantidad_entry.get())
+    except ValueError:
+        messagebox.showerror("Error", "Cantidad debe ser un número")
+        return
+
+    with open('./Database/Usuario_actual.json', 'r') as archivo:
         datos_cargados = json.load(archivo)
         usuario_actual = datos_cargados['usuario_actual']
 
-    contenido_carrito = visualizador.get('1.0','end-1c')
+    contenido_carrito = visualizador.get('1.0', 'end-1c')
     lineas = contenido_carrito.split('\n')
-    
     factura = '\n'.join(lineas)
 
-    # Generar un nombre de archivo único para la factura
-    nombre_archivo_factura = f'./Database/Factura_{contador_facturas}.txt'
-    contador_facturas += 1  # Incrementar el contador para la próxima factura
 
-    # Guardar la factura en un archivo de texto
-    with open(nombre_archivo_factura, 'w') as archivo:
-        archivo.write(factura)
+    contador_facturas += 1
 
-    print("La venta ha sido realizada por el usuario: " + usuario_actual)
+    # Definir la ruta de la carpeta donde se guardarán las facturas
+    ruta_carpeta_facturas = './Database/'
+
+    # Verificar si la carpeta de facturas existe, si no, crearla
+    if not os.path.exists(ruta_carpeta_facturas):
+        os.makedirs(ruta_carpeta_facturas)
+
+    # Guardar la factura en un archivo de texto con el número de factura actual
+    nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
+    with open(nombre_archivo_factura, 'w') as f:
+        f.write(factura)
+
+    # Lee los datos de los productos desde el archivo CSV
+    df = pd.read_csv("./Database/productos.csv")
+
+    # Verifica si el producto existe en la base de datos
+    try:
+        id_producto = int(id_producto)
+    except ValueError:
+        messagebox.showerror("Error", "ID de producto debe ser un número")
+        return
+
+    if id_producto not in df['ID'].values:
+        messagebox.showerror("Error", "ID de producto no encontrado")
+        return
+
+    # Encuentra el índice del producto que se está vendiendo
+    indice_producto = df.loc[df['ID'] == id_producto].index[0]
+
+    # Verifica si hay suficiente cantidad del producto
+    cantidad_actual = df.at[indice_producto, 'Cantidad']
+    if cantidad_vendida > cantidad_actual:
+        messagebox.showerror("Error", "Cantidad insuficiente en inventario")
+        return
+
+    # Actualiza la cantidad del producto
+    df.at[indice_producto, 'Cantidad'] = cantidad_actual - cantidad_vendida
+
+    # Escribe los datos de los productos actualizados de nuevo en el archivo CSV
+    df.to_csv("./Database/productos.csv", index=False)
+
+    messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
+
+    actualizar_tabla()
+
+    # Limpia las entradas y el visualizador
+    id_entry.delete(0, END)
+    cantidad_entry.delete(0, END)
+    visualizador.configure(state='normal')
+    visualizador.delete('1.0', END)
+    visualizador.insert('end', "Carrito de compras:\n")
+    visualizador.configure(state='disabled')
 
 
 venta_button = Button(
@@ -232,5 +305,8 @@ carrito_button.configure(
 )
 
 carrito_button.place(x = 90, y = 200)
+
+
+
 
 ventas.mainloop()
