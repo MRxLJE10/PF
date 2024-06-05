@@ -69,7 +69,6 @@ for index, row in df.iterrows():
         tabla.insert("", "end", values=(row['ID'], row['Nombre'], row['Cantidad'], "Agotado"))
 
 
-
 tabla.place(x=50, y=100)
 
 

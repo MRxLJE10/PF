@@ -105,6 +105,7 @@ def actualizar_tabla():
 def on_focus(event):
     actualizar_tabla()
 
+
 # Asume que 'ventana' es el objeto de la ventana de Tkinter
 ventas.bind('<FocusIn>', on_focus)
 
@@ -147,6 +148,65 @@ cantidad_entry = Entry(
 )
 
 cantidad_entry.place(x=300, y=130)
+
+#--------Funcion que Autocompleta apartir del Documento del cliente----------
+def autocompletar(*args):
+    documento_ingresado = doc_entry.get()
+    with open("./Database/Clientes.txt", "r") as archivo:
+        lineas = archivo.readlines()
+        for linea in lineas:
+            cliente_registrado = linea.split(",")
+            documento = cliente_registrado[3].strip() 
+            if documento == documento_ingresado:
+                nom_entry.delete(0, END)
+                nom_entry.insert(0, cliente_registrado[1])
+                break
+        else:
+            nom_entry.delete(0, END)
+    
+        
+doc_label = Label(
+    ventas,
+    text="N° Documento:",
+    borderwidth=0
+)
+
+doc_label.configure(
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
+)
+
+doc_label.place(x=100, y=160)
+
+doc_entry = Entry(
+    ventas
+)
+
+doc_entry.place(x=100, y=190)
+
+doc_entry.bind("<KeyRelease>", autocompletar)
+
+nom_label = Label(
+    ventas,
+    text="Cliente:",
+    borderwidth=0
+)
+
+nom_label.configure(
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
+)
+
+nom_label.place(x=300, y=160)
+
+nom_entry = Entry(
+    ventas
+)
+
+nom_entry.place(x=300, y=190)
+
 
 #----------------------Función que hace la venta----------------------
 
@@ -208,11 +268,21 @@ def realizar_venta():
     if not os.path.exists(ruta_carpeta_facturas):
         os.makedirs(ruta_carpeta_facturas)
 
+    # Obtén la fecha y hora actual
+    fecha_hora_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
     # Guardar la factura en un archivo de texto con el número de factura actual
     nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
     with open(nombre_archivo_factura, 'w') as f:
+        f.write("Rapitienda 'El Muchachon'\n")
+        f.write(f"Factura numero: {contador_facturas}\n")
+        f.write(f"Fecha y hora: {fecha_hora_actual}\n\n")
+        f.write("---------------------------------------- \n\n")
+        f.write(f"Nombre Cliente: {nom_entry.get()}\n")
+        f.write(f"Documento Cliente: {doc_entry.get()}\n\n")
+        f.write("---------------------------------------- \n\n")
         for item in carrito:
-            f.write(f"{item['Cantidad']} {item['Nombre']}\n")
+            f.write(f"Productos Comprados: \n {item['Cantidad']} {item['Nombre']}\n")
 
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 
@@ -242,7 +312,7 @@ venta_button.configure(
     bg="#1E4024"
 )
 
-venta_button.place(x=300, y=200)
+venta_button.place(x=300, y=300)
 
 #----------------------Función que agrega productos al carrito----------------------
 
@@ -282,7 +352,7 @@ def agregar_texto():
     visualizador.configure(state='normal')
     visualizador.insert('end', f"{cantidad} {nombre_producto}\n")
     visualizador.configure(state='disabled')
-
+    
 def eliminar_ultimo_producto():
     if not carrito:
         messagebox.showerror("Error", "No hay productos en el carrito para eliminar")
@@ -325,7 +395,7 @@ carrito_button.configure(
     bg="#1E4024"
 )
 
-carrito_button.place(x=90, y=200)
+carrito_button.place(x=90, y=300)
 
 eliminar_button = Button(
     ventas,
@@ -342,6 +412,6 @@ eliminar_button.configure(
     bg="#1E4024"
 )
 
-eliminar_button.place(x=90, y=250)
+eliminar_button.place(x=90, y=350)
 
 ventas.mainloop()
