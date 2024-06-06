@@ -208,6 +208,31 @@ nom_entry = Entry(
 nom_entry.place(x=300, y=190)
 
 
+
+
+
+monto_a_pagar_label = Label(
+    ventas,
+    text="Monto a pagar",
+    borderwidth=0
+)
+
+monto_a_pagar_label.configure(
+    font=("Bahnschrift", 12),
+    fg="#FFFFFF",
+    bg="#1E4024"
+)
+
+monto_a_pagar_label.place(x=100, y=230)
+
+monto_a_pagar_entry = Entry(
+    ventas
+)
+
+monto_a_pagar_entry.place(x=100, y=260)
+
+
+
 #----------------------Función que hace la venta----------------------
 
 try:
@@ -219,8 +244,10 @@ except FileNotFoundError:
 
 carrito = []
 
+
 def realizar_venta():
     global contador_facturas
+    global total_venta
 
     # Verifica si hay productos en el carrito
     if not carrito:
@@ -236,6 +263,7 @@ def realizar_venta():
     # Lee los datos de los productos desde el archivo CSV
     df = pd.read_csv("./Database/productos.csv")
 
+    total_venta = 0
     for item in carrito:
         id_producto = item['ID']
         cantidad_vendida = item['Cantidad']
@@ -247,6 +275,7 @@ def realizar_venta():
 
         # Encuentra el índice del producto que se está vendiendo
         indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
+
 
         # Verifica si hay suficiente cantidad del producto
         cantidad_actual = df.at[indice_producto, 'Cantidad']
@@ -275,7 +304,7 @@ def realizar_venta():
         os.makedirs(ruta_carpeta_facturas)
 
     # Obtén la fecha y hora actual
-    fecha_hora_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    fecha_hora_actual = datetime.now().strftime('%Y-%m-%d')
 
     with open('./Database/Usuario_actual.json', 'r') as f:
         Usuario_actual = json.load(f)
@@ -293,7 +322,7 @@ def realizar_venta():
         f.write("---------------------------------------- \n\n")
         f.write("Productos comprados:\n")
 
-        total_venta = 0
+        
 
         with open("./Database/productos.csv", "r") as archivo:
             lineas = archivo.readlines()
@@ -310,9 +339,27 @@ def realizar_venta():
                         total_producto = cantidad * int(precio_producto)
                         f.write(f"{cantidad} {nombre_producto} - C/U${precio_producto} Total producto: ${total_producto}\n")
                         total_venta += total_producto
-        f.write("\n""---------------------------------------- \n\n")
-        f.write(f"Total de la venta: ${total_venta}\n")
+# Verifica si el monto a pagar es un entero positivo
+    try:
+        monto_a_pagar = int(monto_a_pagar_entry.get())
+        if monto_a_pagar <= 0:
+            raise ValueError
+    except ValueError:
+        messagebox.showerror("Error", "El monto a pagar debe ser un entero positivo")
+        # Borra el contenido del campo monto_a_pagar_entry
+        monto_a_pagar_entry.delete(0, END)
+        return
+    # Verifica si el monto a pagar es suficiente
+    if monto_a_pagar < total_venta:
+        messagebox.showerror("Error", "El monto a pagar es menor que el total de la venta")
+        return
     
+
+    f.write("\n""---------------------------------------- \n\n")
+    f.write(f"TOTAL: ${total_venta}\n")
+    f.write(f"Efectivo: ${monto_a_pagar_entry.get()}\n")
+    f.write(f"Cambio: ${int(monto_a_pagar_entry.get()) - total_venta}\n")
+
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 
     actualizar_tabla()
@@ -326,6 +373,7 @@ def realizar_venta():
     visualizador.configure(state='disabled')
     doc_entry.delete(0, END)
     nom_entry.delete(0, END)
+    monto_a_pagar_entry.delete(0, END)
     carrito.clear()
 
 
@@ -461,5 +509,7 @@ eliminar_button.configure(
 )
 
 eliminar_button.place(x=90, y=350)
+
+
 
 ventas.mainloop()
