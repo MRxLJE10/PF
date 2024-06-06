@@ -226,6 +226,12 @@ def realizar_venta():
     if not carrito:
         messagebox.showerror("Error", "El carrito está vacío")
         return
+    # Verifica si se ingresó el nombre del cliente
+    nombre_cliente = nom_entry.get().strip()
+    if not nombre_cliente:
+        messagebox.showerror("Error", "Debe ingresar un documento válido de cliente")
+        return
+
 
     # Lee los datos de los productos desde el archivo CSV
     df = pd.read_csv("./Database/productos.csv")
@@ -295,7 +301,10 @@ def realizar_venta():
     visualizador.delete('1.0', END)
     visualizador.insert('end', "Carrito de compras:\n")
     visualizador.configure(state='disabled')
+    doc_entry.delete(0, END)
+    nom_entry.delete(0, END)
     carrito.clear()
+
 
 venta_button = Button(
     ventas,
@@ -328,44 +337,60 @@ def buscar_producto(id_producto):
 
     return None
 
-def agregar_texto():
+def agregar_a_carrito():
     id_producto = id_entry.get()
-    producto = buscar_producto(id_producto)
+    cantidad = cantidad_entry.get()
+
+    if not id_producto or not cantidad:
+        messagebox.showerror("Error", "Debe ingresar un ID de producto y una cantidad")
+        return
+
     try:
-        cantidad = int(cantidad_entry.get())
+        cantidad = int(cantidad)
+        if cantidad <= 0:
+            raise ValueError
     except ValueError:
-        messagebox.showerror("Error", "Cantidad debe ser un número")
+        messagebox.showerror("Error", "La cantidad debe ser un número entero positivo")
         return
 
-    if producto is None:
-        messagebox.showerror("Error", "Producto no encontrado")
+    # Lee los datos de los productos desde el archivo CSV
+    df = pd.read_csv("./Database/productos.csv")
+
+    # Busca el producto en el inventario
+    if int(id_producto) not in df['ID'].values:
+        messagebox.showerror("Error", f"ID de producto {id_producto} no encontrado")
         return
 
-    nombre_producto = producto['Nombre']
-    cantidad_disponible = int(producto['Cantidad'])
+    # Encuentra el indice
+    indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
 
-    if cantidad > cantidad_disponible:
-        messagebox.showerror("Error", "Cantidad insuficiente en inventario")
-        return
+    nombre_producto = df.at[indice_producto, 'Nombre']
 
-    carrito.append({'ID': id_producto, 'Nombre': nombre_producto, 'Cantidad': cantidad})
-    visualizador.configure(state='normal')
-    visualizador.insert('end', f"{cantidad} {nombre_producto}\n")
-    visualizador.configure(state='disabled')
-    
+    carrito.append({
+        'ID': id_producto,
+        'Nombre': nombre_producto,
+        'Cantidad': cantidad
+    })
+
+    # Actualiza el visualizador del carrito
+    actualizar_visualizador_carrito()
+
 def eliminar_ultimo_producto():
     if not carrito:
         messagebox.showerror("Error", "No hay productos en el carrito para eliminar")
         return
 
     carrito.pop()
-    
+
     # Actualiza el visualizador del carrito
+    actualizar_visualizador_carrito()
+
+def actualizar_visualizador_carrito():
     contenido_carrito = "Carrito de compras:\n" + "\n".join([f"{item['Cantidad']} {item['Nombre']}" for item in carrito])
-    
+
     visualizador.configure(state='normal')
     visualizador.delete('1.0', END)
-    visualizador.insert('end', contenido_carrito)
+    visualizador.insert('1.0', contenido_carrito)
     visualizador.configure(state='disabled')
 
 visualizador = Text(
@@ -386,7 +411,7 @@ carrito_button = Button(
     borderwidth=0,
     activebackground="#1E4024",
     activeforeground="#FFFFFF",
-    command=agregar_texto
+    command=agregar_a_carrito
 )
 
 carrito_button.configure(
