@@ -277,19 +277,41 @@ def realizar_venta():
     # Obtén la fecha y hora actual
     fecha_hora_actual = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
 
-    # Guardar la factura en un archivo de texto con el número de factura actual
+    with open('./Database/Usuario_actual.json', 'r') as f:
+        Usuario_actual = json.load(f)
+
+    # Guarda la factura en un archivo de texto
     nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
     with open(nombre_archivo_factura, 'w') as f:
         f.write("Rapitienda 'El Muchachon'\n")
         f.write(f"Factura numero: {contador_facturas}\n")
         f.write(f"Fecha y hora: {fecha_hora_actual}\n\n")
         f.write("---------------------------------------- \n\n")
+        f.write(f"Venta realizada por: {Usuario_actual['usuario_actual']}\n")
         f.write(f"Nombre Cliente: {nom_entry.get()}\n")
         f.write(f"Documento Cliente: {doc_entry.get()}\n\n")
         f.write("---------------------------------------- \n\n")
-        for item in carrito:
-            f.write(f"Productos Comprados: \n {item['Cantidad']} {item['Nombre']}\n")
+        f.write("Productos comprados:\n")
 
+        total_venta = 0
+
+        with open("./Database/productos.csv", "r") as archivo:
+            lineas = archivo.readlines()
+            for linea in lineas:
+                datos_producto = linea.split(",")
+                id_producto = datos_producto[0].strip()
+                nombre_producto = datos_producto[1].strip()
+                cantidad_producto = datos_producto[2].strip()
+                precio_producto = datos_producto[4].strip()
+
+                for item in carrito:
+                    if item['ID'] == id_producto:
+                        cantidad = int(item['Cantidad'])
+                        f.write(f"{cantidad} {nombre_producto} - C/U${precio_producto}\n")
+                        total_venta += cantidad * int(precio_producto)
+        f.write("\n""---------------------------------------- \n\n")
+        f.write(f"Total de la venta: ${total_venta}\n")
+    
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 
     actualizar_tabla()
