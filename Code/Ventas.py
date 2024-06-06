@@ -307,8 +307,9 @@ def realizar_venta():
                 for item in carrito:
                     if item['ID'] == id_producto:
                         cantidad = int(item['Cantidad'])
-                        f.write(f"{cantidad} {nombre_producto} - C/U${precio_producto}\n")
-                        total_venta += cantidad * int(precio_producto)
+                        total_producto = cantidad * int(precio_producto)
+                        f.write(f"{cantidad} {nombre_producto} - C/U${precio_producto} Total producto: ${total_producto}\n")
+                        total_venta += total_producto
         f.write("\n""---------------------------------------- \n\n")
         f.write(f"Total de la venta: ${total_venta}\n")
     
