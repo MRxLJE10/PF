@@ -6,6 +6,7 @@ import pandas as pd
 import json
 import os
 from datetime import datetime
+import random
 
 ventas = Tk()
 
@@ -109,6 +110,18 @@ def on_focus(event):
 # Asume que 'ventana' es el objeto de la ventana de Tkinter
 ventas.bind('<FocusIn>', on_focus)
 
+
+#----------------------------------------------
+def validar_id_producto(texto):
+    if texto.isdigit():
+        return True
+    elif texto == "":
+        return True
+    else:
+        return False
+
+vcmd = ventas.register(validar_id_producto)
+
 id_label = Label(
     ventas,
     text="ID Producto",
@@ -124,7 +137,9 @@ id_label.configure(
 id_label.place(x=100, y=100)
 
 id_entry = Entry(
-    ventas
+    ventas,
+    validate="key",
+    validatecommand=(vcmd, '%P')
 )
 
 id_entry.place(x=100, y=130)
@@ -149,6 +164,9 @@ cantidad_entry = Entry(
 
 cantidad_entry.place(x=300, y=130)
 
+# Variable para almacenar el ID del cliente
+id_cliente_entry = StringVar()
+
 #--------Funcion que Autocompleta apartir del Documento del cliente----------
 def autocompletar(*args):
     documento_ingresado = doc_entry.get()
@@ -158,6 +176,7 @@ def autocompletar(*args):
             cliente_registrado = linea.split(",")
             documento = cliente_registrado[3].strip() 
             if documento == documento_ingresado:
+                id_cliente_entry.set(cliente_registrado[0])
                 nom_entry.delete(0, END)
                 nom_entry.insert(0, cliente_registrado[1])
                 break
@@ -207,10 +226,6 @@ nom_entry = Entry(
 
 nom_entry.place(x=300, y=190)
 
-
-
-
-
 monto_a_pagar_label = Label(
     ventas,
     text="Monto a pagar",
@@ -231,8 +246,6 @@ monto_a_pagar_entry = Entry(
 
 monto_a_pagar_entry.place(x=100, y=260)
 
-
-
 #----------------------Función que hace la venta----------------------
 
 try:
@@ -243,7 +256,6 @@ except FileNotFoundError:
     contador_facturas = 0
 
 carrito = []
-
 
 def realizar_venta():
     global contador_facturas
@@ -315,17 +327,26 @@ def realizar_venta():
     with open('./Database/Usuario_actual.json', 'r') as f:
         Usuario_actual = json.load(f)
 
+    # Genera un número aleatorio de 3 dígitos
+    numero_aleatorio = random.randint(100, 999)
+
     # Guarda la factura en un archivo de texto
     nombre_archivo_factura = f'{ruta_carpeta_facturas}factura_{contador_facturas}.txt'
     with open(nombre_archivo_factura, 'w') as f:
-        f.write("Rapitienda 'El Muchachon'\n")
+        f.write("\n")
+        f.write("****************************************\n")
+        f.write("******** Rapitienda 'El Muchachon' *****\n")
+        f.write("****************************************\n")
+        f.write("\n")
+        f.write(f"ID Factura: M-{numero_aleatorio}\n")
         f.write(f"Factura numero: {contador_facturas}\n")
         f.write(f"Fecha y hora: {fecha_hora_actual}\n\n")
-        f.write("---------------------------------------- \n\n")
+        f.write("======================================== \n\n")
         f.write(f"Venta realizada por: {Usuario_actual['usuario_actual']}\n")
+        f.write(f"ID Cliente: {id_cliente_entry.get()}\n")
         f.write(f"Nombre Cliente: {nom_entry.get()}\n")
         f.write(f"Documento Cliente: {doc_entry.get()}\n\n")
-        f.write("---------------------------------------- \n\n")
+        f.write("======================================== \n\n")
         f.write("Productos comprados:\n")
         for item in carrito:
             id_producto = item['ID']
@@ -334,8 +355,7 @@ def realizar_venta():
             precio_producto = df.loc[df['ID'] == int(id_producto), 'Precio venta'].values[0]
             total_producto = cantidad_producto * precio_producto
             f.write(f"{cantidad_producto} {nombre_producto} - C/U${precio_producto} Total producto: ${total_producto}\n")
-
-        f.write("\n""---------------------------------------- \n\n")
+        f.write("\n""======================================== \n\n")
         f.write(f"TOTAL: ${total_venta}\n")
         f.write(f"Efectivo: ${monto_a_pagar_entry.get()}\n")
         f.write(f"Cambio: ${monto_a_pagar - total_venta}\n")
@@ -414,6 +434,12 @@ def agregar_a_carrito():
     # Encuentra el indice
     indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
 
+    cantidad_disponible = df.at[indice_producto, 'Cantidad']
+
+    if cantidad > cantidad_disponible:
+        messagebox.showerror("Error", f"No hay suficiente cantidad disponible de {df.at[indice_producto, 'Nombre']}. Cantidad disponible: {cantidad_disponible}")
+        return
+
     nombre_producto = df.at[indice_producto, 'Nombre']
 
     carrito.append({
@@ -488,7 +514,5 @@ eliminar_button.configure(
 )
 
 eliminar_button.place(x=90, y=350)
-
-
 
 ventas.mainloop()
