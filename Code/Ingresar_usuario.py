@@ -31,7 +31,7 @@ label.place(x=0, y=0)
 
 def volver():
     Ingresar_usuario.destroy()
-    subprocess.call(["python","Code/Menu_principal.py" ])
+    subprocess.call(["python","Code/PF.py" ])
 
 #-------------------Funcion login-------------------
 

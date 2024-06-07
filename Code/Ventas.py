@@ -259,31 +259,36 @@ def realizar_venta():
         messagebox.showerror("Error", "Debe ingresar un documento válido de cliente")
         return
 
+    # Verifica si el monto a pagar es un entero positivo
+    try:
+        monto_a_pagar = int(monto_a_pagar_entry.get())
+        if monto_a_pagar <= 0:
+            raise ValueError
+    except ValueError:
+        messagebox.showerror("Error", "El monto a pagar debe ser un entero positivo")
+        monto_a_pagar_entry.delete(0, END)
+        return
 
-    # Lee los datos de los productos desde el archivo CSV
-    df = pd.read_csv("./Database/productos.csv")
-
+    # Calcula el total de la venta
     total_venta = 0
+    df = pd.read_csv("./Database/productos.csv")
     for item in carrito:
         id_producto = item['ID']
         cantidad_vendida = item['Cantidad']
-
-        # Verifica si el producto existe en la base de datos
-        if int(id_producto) not in df['ID'].values:
-            messagebox.showerror("Error", f"ID de producto {id_producto} no encontrado")
-            return
-
-        # Encuentra el índice del producto que se está vendiendo
         indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
+        precio_producto = df.at[indice_producto, 'Precio venta']
+        total_venta += cantidad_vendida * precio_producto
 
+    if monto_a_pagar < total_venta:
+        messagebox.showerror("Error", "El monto a pagar es menor que el total de la venta")
+        return
 
-        # Verifica si hay suficiente cantidad del producto
+    # Descuenta los productos vendidos del inventario
+    for item in carrito:
+        id_producto = item['ID']
+        cantidad_vendida = item['Cantidad']
+        indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
         cantidad_actual = df.at[indice_producto, 'Cantidad']
-        if cantidad_vendida > cantidad_actual:
-            messagebox.showerror("Error", f"Cantidad insuficiente en inventario para el producto {id_producto}")
-            return
-
-        # Actualiza la cantidad del producto
         df.at[indice_producto, 'Cantidad'] = cantidad_actual - cantidad_vendida
 
     # Escribe los datos de los productos actualizados de nuevo en el archivo CSV
@@ -306,6 +311,7 @@ def realizar_venta():
     # Obtén la fecha y hora actual
     fecha_hora_actual = datetime.now().strftime('%Y-%m-%d')
 
+    # Obtén el usuario actual
     with open('./Database/Usuario_actual.json', 'r') as f:
         Usuario_actual = json.load(f)
 
@@ -321,48 +327,20 @@ def realizar_venta():
         f.write(f"Documento Cliente: {doc_entry.get()}\n\n")
         f.write("---------------------------------------- \n\n")
         f.write("Productos comprados:\n")
+        for item in carrito:
+            id_producto = item['ID']
+            nombre_producto = item['Nombre']
+            cantidad_producto = item['Cantidad']
+            precio_producto = df.loc[df['ID'] == int(id_producto), 'Precio venta'].values[0]
+            total_producto = cantidad_producto * precio_producto
+            f.write(f"{cantidad_producto} {nombre_producto} - C/U${precio_producto} Total producto: ${total_producto}\n")
 
-        
-
-        with open("./Database/productos.csv", "r") as archivo:
-            lineas = archivo.readlines()
-            for linea in lineas:
-                datos_producto = linea.split(",")
-                id_producto = datos_producto[0].strip()
-                nombre_producto = datos_producto[1].strip()
-                cantidad_producto = datos_producto[2].strip()
-                precio_producto = datos_producto[4].strip()
-
-                for item in carrito:
-                    if item['ID'] == id_producto:
-                        cantidad = int(item['Cantidad'])
-                        total_producto = cantidad * int(precio_producto)
-                        f.write(f"{cantidad} {nombre_producto} - C/U${precio_producto} Total producto: ${total_producto}\n")
-                        total_venta += total_producto
-# Verifica si el monto a pagar es un entero positivo
-    try:
-        monto_a_pagar = int(monto_a_pagar_entry.get())
-        if monto_a_pagar <= 0:
-            raise ValueError
-    except ValueError:
-        messagebox.showerror("Error", "El monto a pagar debe ser un entero positivo")
-        # Borra el contenido del campo monto_a_pagar_entry
-        monto_a_pagar_entry.delete(0, END)
-        return
-    # Verifica si el monto a pagar es suficiente
-    if monto_a_pagar < total_venta:
-        messagebox.showerror("Error", "El monto a pagar es menor que el total de la venta")
-        return
-    
-
-    f.write("\n""---------------------------------------- \n\n")
-    f.write(f"TOTAL: ${total_venta}\n")
-    f.write(f"Efectivo: ${monto_a_pagar_entry.get()}\n")
-    f.write(f"Cambio: ${int(monto_a_pagar_entry.get()) - total_venta}\n")
+        f.write("\n""---------------------------------------- \n\n")
+        f.write(f"TOTAL: ${total_venta}\n")
+        f.write(f"Efectivo: ${monto_a_pagar_entry.get()}\n")
+        f.write(f"Cambio: ${monto_a_pagar - total_venta}\n")
 
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
-
-    actualizar_tabla()
 
     # Limpia las entradas y el visualizador
     id_entry.delete(0, END)
@@ -375,6 +353,7 @@ def realizar_venta():
     nom_entry.delete(0, END)
     monto_a_pagar_entry.delete(0, END)
     carrito.clear()
+    actualizar_tabla()
 
 
 venta_button = Button(
