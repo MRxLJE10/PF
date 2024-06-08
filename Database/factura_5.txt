@@ -1,0 +1,27 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-900
+Factura numero: 5
+Fecha y hora: 2024-06-07
+
+======================================== 
+
+Venta realizada por: Gabriela
+ID Cliente: 3
+Nombre Cliente: Sebastian
+Documento Cliente: 778899
+
+======================================== 
+
+Productos comprados:
+25 Banano - C/U$900 Total producto: $22500
+5 Coca-Cola - C/U$2000 Total producto: $10000
+
+======================================== 
+
+TOTAL: $32500
+Efectivo: $50000
+Cambio: $17500

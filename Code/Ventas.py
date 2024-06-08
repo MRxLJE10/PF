@@ -66,7 +66,7 @@ tabla = ttk.Treeview(
     ventas
 )
 
-# Carga el archivo csv con la libreria pandas(nombrada como pd)
+# Carga el archivo csv con la libreria pandas (nombrada como pd)
 df = pd.read_csv("./Database/productos.csv")
 
 tabla['columns'] = ("ID", "Nombre", "Cantidad", "Costo Compra", "Precio Venta", "Fecha de vencimiento")
@@ -167,7 +167,7 @@ cantidad_entry.place(x=300, y=130)
 # Variable para almacenar el ID del cliente
 id_cliente_entry = StringVar()
 
-#--------Funcion que Autocompleta apartir del Documento del cliente----------
+#--------Función que Autocompleta a partir del Documento del cliente----------
 def autocompletar(*args):
     documento_ingresado = doc_entry.get()
     with open("./Database/Clientes.txt", "r") as archivo:
@@ -359,6 +359,17 @@ def realizar_venta():
         f.write(f"TOTAL: ${total_venta}\n")
         f.write(f"Efectivo: ${monto_a_pagar_entry.get()}\n")
         f.write(f"Cambio: ${monto_a_pagar - total_venta}\n")
+
+    # Agregar los detalles de la factura al archivo facturas.txt
+    with open('./Database/facturas.txt', 'a') as facturas_archivo:
+        facturas_archivo.write(f"ID Factura: M-{numero_aleatorio}, ")
+        facturas_archivo.write(f"ID Cliente: {id_cliente_entry.get()}, ")
+        facturas_archivo.write(f"Fecha: {fecha_hora_actual}, ")
+        facturas_archivo.write(f"Total: ${total_venta}, ")
+        facturas_archivo.write("Productos: ")
+        for item in carrito:
+            facturas_archivo.write(f"{item['Nombre']} (Cantidad: {item['Cantidad']}), ")
+        facturas_archivo.write("\n")
 
     messagebox.showinfo("Venta realizada", "La venta ha sido realizada exitosamente")
 

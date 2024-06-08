@@ -1,0 +1,26 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-668
+Factura numero: 6
+Fecha y hora: 2024-06-08
+
+======================================== 
+
+Venta realizada por: Gabriela
+ID Cliente: 1
+Nombre Cliente: Pedro
+Documento Cliente: 112233
+
+======================================== 
+
+Productos comprados:
+5 Coca-Cola - C/U$2000 Total producto: $10000
+
+======================================== 
+
+TOTAL: $10000
+Efectivo: $15000
+Cambio: $5000

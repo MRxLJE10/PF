@@ -1,0 +1,28 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-725
+Factura numero: 7
+Fecha y hora: 2024-06-08
+
+======================================== 
+
+Venta realizada por: Gabriela
+ID Cliente: 2
+Nombre Cliente: Maria
+Documento Cliente: 445566
+
+======================================== 
+
+Productos comprados:
+8 Manzana - C/U$1500 Total producto: $12000
+8 Pan - C/U$600 Total producto: $4800
+8 Azucar - C/U$500 Total producto: $4000
+
+======================================== 
+
+TOTAL: $20800
+Efectivo: $45000
+Cambio: $24200

@@ -1,0 +1,27 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-321
+Factura numero: 3
+Fecha y hora: 2024-06-07
+
+======================================== 
+
+Venta realizada por: Samuel
+ID Cliente: 4
+Nombre Cliente: Marcelo
+Documento Cliente: 001122
+
+======================================== 
+
+Productos comprados:
+15 Azucar - C/U$500 Total producto: $7500
+3 Sal - C/U$2000 Total producto: $6000
+
+======================================== 
+
+TOTAL: $13500
+Efectivo: $15000
+Cambio: $1500
