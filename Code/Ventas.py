@@ -91,8 +91,8 @@ tabla.place(x=100, y=600)
 
 def actualizar_tabla():
     # Borra todos los elementos de la tabla
-    for i in tabla.get_children():
-        tabla.delete(i)
+    for i in tabla.get_children(): #Que es get children? #Es un método que devuelve una lista con los elementos de la tabla
+        tabla.delete(i) 
 
     # Vuelve a llenar la tabla con los datos actualizados
     try:
@@ -101,7 +101,7 @@ def actualizar_tabla():
         return
 
     for index, row in df.iterrows():
-        tabla.insert("", "end", values=list(row))
+        tabla.insert("", "end", values=list(row)) #Inserta los valores de la fila en la tabla
 
 def on_focus(event):
     actualizar_tabla()
@@ -111,7 +111,8 @@ def on_focus(event):
 ventas.bind('<FocusIn>', on_focus)
 
 
-#----------------------------------------------
+#---------Función para validar el ID del producto---------
+
 def validar_id_producto(texto):
     if texto.isdigit():
         return True
@@ -168,6 +169,7 @@ cantidad_entry.place(x=300, y=130)
 id_cliente_entry = StringVar()
 
 #--------Función que Autocompleta a partir del Documento del cliente----------
+
 def autocompletar(*args):
     documento_ingresado = doc_entry.get()
     with open("./Database/Clientes.txt", "r") as archivo:
@@ -321,7 +323,7 @@ def realizar_venta():
         os.makedirs(ruta_carpeta_facturas)
 
     # Obtén la fecha y hora actual
-    fecha_hora_actual = datetime.now().strftime('%Y-%m-%d')
+    fecha_actual = datetime.now().strftime('%Y-%m-%d')
 
     # Obtén el usuario actual
     with open('./Database/Usuario_actual.json', 'r') as f:
@@ -340,7 +342,7 @@ def realizar_venta():
         f.write("\n")
         f.write(f"ID Factura: M-{numero_aleatorio}\n")
         f.write(f"Factura numero: {contador_facturas}\n")
-        f.write(f"Fecha y hora: {fecha_hora_actual}\n\n")
+        f.write(f"Fecha: {fecha_actual}\n\n")
         f.write("======================================== \n\n")
         f.write(f"Venta realizada por: {Usuario_actual['usuario_actual']}\n")
         f.write(f"ID Cliente: {id_cliente_entry.get()}\n")
@@ -364,7 +366,7 @@ def realizar_venta():
     with open('./Database/facturas.txt', 'a') as facturas_archivo:
         facturas_archivo.write(f"ID Factura: M-{numero_aleatorio}, ")
         facturas_archivo.write(f"ID Cliente: {id_cliente_entry.get()}, ")
-        facturas_archivo.write(f"Fecha: {fecha_hora_actual}, ")
+        facturas_archivo.write(f"Fecha: {fecha_actual}, ")
         facturas_archivo.write(f"Total: ${total_venta}, ")
         facturas_archivo.write("Productos: ")
         for item in carrito:
@@ -412,18 +414,18 @@ def buscar_producto(id_producto):
     except pd.errors.EmptyDataError:
         return None
 
-    for index, row in df.iterrows():
-        if str(row['ID']) == id_producto:
-            return row
+    for index, row in df.iterrows():   #Itera sobre las filas del dataframe
+        if str(row['ID']) == id_producto: #Si el ID del producto es igual al ID ingresado
+            return row #Retorna la fila del producto
 
-    return None
+    return None 
 
 def agregar_a_carrito():
     id_producto = id_entry.get()
     cantidad = cantidad_entry.get()
 
     if not id_producto or not cantidad:
-        messagebox.showerror("Error", "Debe ingresar un ID de producto y una cantidad")
+        messagebox.showerror("Error", "Debe ingresar un ID de producto y una cantidad") 
         return
 
     try:
@@ -445,13 +447,13 @@ def agregar_a_carrito():
     # Encuentra el indice
     indice_producto = df.loc[df['ID'] == int(id_producto)].index[0]
 
-    cantidad_disponible = df.at[indice_producto, 'Cantidad']
+    cantidad_disponible = df.at[indice_producto, 'Cantidad'] #Obtiene la cantidad disponible del producto
 
     if cantidad > cantidad_disponible:
-        messagebox.showerror("Error", f"No hay suficiente cantidad disponible de {df.at[indice_producto, 'Nombre']}. Cantidad disponible: {cantidad_disponible}")
+        messagebox.showerror("Error", f"No hay suficiente cantidad disponible de {df.at[indice_producto, 'Nombre']}. Cantidad disponible: {cantidad_disponible}") 
         return
 
-    nombre_producto = df.at[indice_producto, 'Nombre']
+    nombre_producto = df.at[indice_producto, 'Nombre']  
 
     carrito.append({
         'ID': id_producto,
@@ -473,7 +475,7 @@ def eliminar_ultimo_producto():
     actualizar_visualizador_carrito()
 
 def actualizar_visualizador_carrito():
-    contenido_carrito = "Carrito de compras:\n" + "\n".join([f"{item['Cantidad']} {item['Nombre']}" for item in carrito])
+    contenido_carrito = "Carrito de compras:\n" + "\n".join([f"{item['Cantidad']} {item['Nombre']}" for item in carrito]) #Crea una cadena con los productos del carrito
 
     visualizador.configure(state='normal')
     visualizador.delete('1.0', END)

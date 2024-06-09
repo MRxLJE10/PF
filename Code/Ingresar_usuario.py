@@ -164,7 +164,7 @@ fechaNacimiento_entry = Entry(
 fechaNacimiento_entry.place(x = 180, y = 360)
 
 
-#funcion que autocompleta a la hora de oprimir el document
+#---------------Funcion que autocompleta cuando se introduce el documento--------------
 
 def autocompletar(*args):
     documento_ingresado = documento_entry.get()

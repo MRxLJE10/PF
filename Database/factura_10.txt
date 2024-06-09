@@ -1,0 +1,26 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-898
+Factura numero: 10
+Fecha: 2024-06-09
+
+======================================== 
+
+Venta realizada por: Sebastian
+ID Cliente: 1
+Nombre Cliente: Pedro
+Documento Cliente: 112233
+
+======================================== 
+
+Productos comprados:
+1 Manzana - C/U$1500 Total producto: $1500
+
+======================================== 
+
+TOTAL: $1500
+Efectivo: $2000
+Cambio: $500

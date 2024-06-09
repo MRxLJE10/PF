@@ -1,0 +1,29 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-874
+Factura numero: 9
+Fecha y hora: 2024-06-09
+
+======================================== 
+
+Venta realizada por: Sebastian
+ID Cliente: 5
+Nombre Cliente: Jhon
+Documento Cliente: 147258369
+
+======================================== 
+
+Productos comprados:
+8 Agua - C/U$1500 Total producto: $12000
+15 Sal - C/U$2000 Total producto: $30000
+7 Azucar - C/U$500 Total producto: $3500
+20 Pan - C/U$600 Total producto: $12000
+
+======================================== 
+
+TOTAL: $57500
+Efectivo: $100000
+Cambio: $42500

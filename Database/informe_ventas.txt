@@ -1,6 +1,6 @@
 ========================================
 ********** Informe de Ventas ***********
-******2024-06-04 hasta 2024-06-08*******
+******2024-06-07 hasta 2024-06-09*******
 ========================================
 ID Factura: M-871, ID Cliente: 1, Fecha: 2024-06-07, Total: $600.0
 ID Factura: M-637, ID Cliente: 2, Fecha: 2024-06-07, Total: $17800.0
@@ -9,7 +9,11 @@ ID Factura: M-484, ID Cliente: 5, Fecha: 2024-06-07, Total: $10500.0
 ID Factura: M-900, ID Cliente: 3, Fecha: 2024-06-07, Total: $32500.0
 ID Factura: M-668, ID Cliente: 1, Fecha: 2024-06-08, Total: $10000.0
 ID Factura: M-725, ID Cliente: 2, Fecha: 2024-06-08, Total: $20800.0
+ID Factura: M-129, ID Cliente: 2, Fecha: 2024-06-09, Total: $15000.0
+ID Factura: M-874, ID Cliente: 5, Fecha: 2024-06-09, Total: $57500.0
+ID Factura: M-898, ID Cliente: 1, Fecha: 2024-06-09, Total: $1500.0
+ID Factura: M-772, ID Cliente: 2, Fecha: 2024-06-09, Total: $2700.0
 
 ========================================
-Total de Ventas: $105700.0
+Total de Ventas: $182400.0
 ========================================

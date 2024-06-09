@@ -239,16 +239,16 @@ def añadir_producto():
             break
 
     producto = pd.DataFrame([[id, nombre, cantidad, costoCompra, precio, fecha]],
-                            columns=df.columns)
+                            columns=df.columns) #Crea un dataframe con los datos ingresados
 
-    df = pd.concat([df, producto], ignore_index=True)
-    df.to_csv("./Database/productos.csv", index=False, na_rep='')
+    df = pd.concat([df, producto], ignore_index=True) 
+    df.to_csv("./Database/productos.csv", index=False, na_rep='') 
 
     # Llama a actualizar_tabla después de añadir el producto
     actualizar_tabla()
 
-def on_focus(event):
-    actualizar_tabla()
+def on_focus(event): 
+    actualizar_tabla() 
 
 # Asume que 'ventana' es el objeto de la ventana de Tkinter
 Ingresar_p.bind('<FocusIn>', on_focus)

@@ -1,0 +1,27 @@
+
+****************************************
+******** Rapitienda 'El Muchachon' *****
+****************************************
+
+ID Factura: M-129
+Factura numero: 8
+Fecha y hora: 2024-06-09
+
+======================================== 
+
+Venta realizada por: Juan
+ID Cliente: 2
+Nombre Cliente: Maria
+Documento Cliente: 445566
+
+======================================== 
+
+Productos comprados:
+10 Banano - C/U$900 Total producto: $9000
+10 Pan - C/U$600 Total producto: $6000
+
+======================================== 
+
+TOTAL: $15000
+Efectivo: $20000
+Cambio: $5000

@@ -5,4 +5,7 @@ ID Factura: M-484, ID Cliente: 5, Fecha: 2024-06-07, Total: $10500, Productos: M
 ID Factura: M-900, ID Cliente: 3, Fecha: 2024-06-07, Total: $32500, Productos: Banano (Cantidad: 25), Coca-Cola (Cantidad: 5), 
 ID Factura: M-668, ID Cliente: 1, Fecha: 2024-06-08, Total: $10000, Productos: Coca-Cola (Cantidad: 5), 
 ID Factura: M-725, ID Cliente: 2, Fecha: 2024-06-08, Total: $20800, Productos: Manzana (Cantidad: 8), Pan (Cantidad: 8), Azucar (Cantidad: 8), 
-ID Factura: M-427, ID Cliente: 1, Fecha: 2024-06-08, Total: $4500, Productos: Manzana (Cantidad: 3), 
+ID Factura: M-129, ID Cliente: 2, Fecha: 2024-06-09, Total: $15000, Productos: Banano (Cantidad: 10), Pan (Cantidad: 10), 
+ID Factura: M-874, ID Cliente: 5, Fecha: 2024-06-09, Total: $57500, Productos: Agua (Cantidad: 8), Sal (Cantidad: 15), Azucar (Cantidad: 7), Pan (Cantidad: 20), 
+ID Factura: M-898, ID Cliente: 1, Fecha: 2024-06-09, Total: $1500, Productos: Manzana (Cantidad: 1), 
+ID Factura: M-772, ID Cliente: 2, Fecha: 2024-06-09, Total: $2700, Productos: Banano (Cantidad: 3), 

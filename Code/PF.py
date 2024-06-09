@@ -48,7 +48,8 @@ ingresar_u.configure(
 
 ingresar_u.place(x=10, y=10)
 
-#----------------------------------------------------------
+#------------Funcion para registrar usuario----------------
+
 def registrar_U():
     inventario.destroy()
     subprocess.call(["python", "Code/registrar.py"])
