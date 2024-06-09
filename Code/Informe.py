@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 informe_p = Tk()
 
 informe_p.title("Informe")
-informe_p.resizable(False, False)
+informe_p.resizable(True, True)
 informe_p.configure(bg="#1E4024")
 
 def volver():
@@ -36,9 +36,9 @@ screenwidth = informe_p.winfo_screenwidth()
 screenheight = informe_p.winfo_screenheight()
 
 x = (screenwidth / 2) - (1000 / 2)
-y = (screenheight / 2) - (900 / 2)
+y = (screenheight / 2) - (750 / 2)
 
-informe_p.geometry("%dx%d+%d+%d" % (1000, 900, x, y))
+informe_p.geometry("%dx%d+%d+%d" % (1000, 750, x, y))
 
 tabla = ttk.Treeview(
     informe_p
@@ -113,6 +113,10 @@ def generar_informe():
         messagebox.showerror("Error", "Formato de fecha incorrecto. Use YYYY-MM-DD.")
         return
     
+    if fecha_fin < fecha_inicio:
+        messagebox.showerror("Error", "Rango de fecha incorrecto, fecha fin es menor a la fecha de inicio.")
+        return
+    
     ventas = []
 
     try:
@@ -172,7 +176,7 @@ def generar_informe():
     plt.savefig('./Database/ventas_por_fecha.png') 
     plt.close() 
 
-    messagebox.showinfo("Informe", f"Informe generado. Total de ventas: ${total_ventas}\nInforme guardado en 'informe_ventas.txt' y 'ventas_por_fecha.png'.")
+    messagebox.showinfo("Informe", f"¡Informe generado! \n\nTotal de ventas: ${total_ventas}\nInforme guardado en: 'informe_ventas.txt' y 'ventas_por_fecha.png'.")
 
 generar_informe_button = Button(
     informe_p,
