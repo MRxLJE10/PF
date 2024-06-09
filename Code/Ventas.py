@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter import messagebox
 from tkinter import ttk
 import subprocess
+from turtle import right
 import pandas as pd 
 import json
 import os
@@ -9,10 +10,18 @@ from datetime import datetime
 import random
 
 ventas = Tk()
-
 ventas.title("Ventas")
-ventas.resizable(False, False)
 ventas.configure(bg="#1E4024")
+
+# Mide las dimensiones de la pantalla y posiciona la pantalla en el centro
+screenwidth = ventas.winfo_screenwidth()
+screenheight = ventas.winfo_screenheight()
+
+x = (screenwidth / 2) - (1000 / 2)
+y = (screenheight / 2) - (750 / 2)
+
+ventas.geometry("%dx%d+%d+%d" % (1000, 750, x, y))
+ventas.resizable(True, True)
 
 # Variable global para el contador de facturas
 contador_facturas = 0
@@ -51,20 +60,10 @@ volver_b.configure(
 
 volver_b.place(x=10, y=10)
 
-# Mide las dimensiones de la pantalla y posiciona la pantalla en el centro
-screenwidth = ventas.winfo_screenwidth()
-screenheight = ventas.winfo_screenheight()
-
-x = (screenwidth / 2) - (1000 / 2)
-y = (screenheight / 2) - (900 / 2)
-
-ventas.geometry("%dx%d+%d+%d" % (1000, 900, x, y))
-
 #----------------------------------------------
 
-tabla = ttk.Treeview(
-    ventas
-)
+tabla = ttk.Treeview(ventas)
+tabla.pack()
 
 # Carga el archivo csv con la libreria pandas (nombrada como pd)
 df = pd.read_csv("./Database/productos.csv")
@@ -87,7 +86,7 @@ tabla.heading("Costo Compra", text="Costo Compra", anchor=CENTER)
 tabla.heading("Precio Venta", text="Precio Venta", anchor=CENTER)
 tabla.heading("Fecha de vencimiento", text="Fecha de vencimiento", anchor=CENTER)
 
-tabla.place(x=100, y=600)
+tabla.place(x=100, y=450)
 
 def actualizar_tabla():
     # Borra todos los elementos de la tabla
