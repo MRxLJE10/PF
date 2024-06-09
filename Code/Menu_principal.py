@@ -40,7 +40,7 @@ def informe_p():
     
 def volver():
     Menu_principal.destroy()
-    subprocess.call(["python", "Code/PF.py"])
+    subprocess.call(["python", "Code/Ingresar_usuario.py"])
 
 def registrar_cliente():
     Menu_principal.destroy()
